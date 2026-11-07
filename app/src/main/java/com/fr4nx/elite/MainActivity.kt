@@ -10,10 +10,10 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var emailInput: TextInputEditText
     private lateinit var passwordInput: TextInputEditText
-    private lateinit var loginButton: MaterialButton
+    private lateinit var loginButton: Button
     private lateinit var statusText: TextView
     private lateinit var loadingBar: ProgressBar
 
