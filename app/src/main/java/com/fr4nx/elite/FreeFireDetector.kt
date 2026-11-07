@@ -2,7 +2,6 @@ package com.fr4nx.elite
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 
 object FreeFireDetector {
 
@@ -22,7 +21,7 @@ object FreeFireDetector {
             try {
                 pm.getPackageInfo(pkg, 0)
                 return FFApp(pkg, label)
-            } catch (_: PackageManager.NameNotFoundException) {
+            } catch (_: Throwable) {
                 // keep scanning
             }
         }
@@ -30,9 +29,13 @@ object FreeFireDetector {
     }
 
     fun launch(ctx: Context, pkg: String): Boolean {
-        val intent = ctx.packageManager.getLaunchIntentForPackage(pkg) ?: return false
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        ctx.startActivity(intent)
-        return true
+        return try {
+            val intent = ctx.packageManager.getLaunchIntentForPackage(pkg) ?: return false
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            ctx.startActivity(intent)
+            true
+        } catch (_: Throwable) {
+            false
+        }
     }
 }
