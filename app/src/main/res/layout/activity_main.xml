@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_deep">
@@ -114,19 +113,18 @@
                     android:textColorHint="@color/text_muted"
                     android:textSize="14sp" />
 
-                <com.google.android.material.button.MaterialButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/login_button"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="22dp"
                     android:background="@drawable/bg_neon_button"
+                    android:backgroundTint="@null"
                     android:letterSpacing="0.15"
                     android:text="LOGIN"
                     android:textColor="#05060A"
                     android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="@null"
-                    app:cornerRadius="16dp" />
+                    android:textStyle="bold" />
 
                 <ProgressBar
                     android:id="@+id/loading_bar"
@@ -134,7 +132,8 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="14dp"
-                    android:indeterminateTint="@color/neon_green" />
+                    android:indeterminateTint="@color/neon_green"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/status_text"
