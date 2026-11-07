@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -15,11 +15,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.math.abs
 
 class DashboardActivity : AppCompatActivity() {
 
-    private val tag = "FR4NX"
-
+    private lateinit var floatingMenu: LinearLayout
     private lateinit var menuHeader: LinearLayout
     private lateinit var menuContent: LinearLayout
     private lateinit var menuChevron: ImageView
@@ -30,24 +30,14 @@ class DashboardActivity : AppCompatActivity() {
     private var detected: FreeFireDetector.FFApp? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(tag, "D1. install crash guard")
-        CrashGuard.install(this)
-
-        Log.d(tag, "D2. super.onCreate")
         super.onCreate(savedInstanceState)
-
-        Log.d(tag, "D3. setContentView")
-        try {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            )
-        } catch (e: Throwable) {
-            Log.e(tag, "setFlags failed", e)
-        }
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
         setContentView(R.layout.activity_dashboard)
 
-        Log.d(tag, "D4. findViewById")
+        floatingMenu = findViewById(R.id.floating_menu)
         menuHeader = findViewById(R.id.menu_header)
         menuContent = findViewById(R.id.menu_content)
         menuChevron = findViewById(R.id.menu_chevron)
@@ -55,14 +45,7 @@ class DashboardActivity : AppCompatActivity() {
         launchButton = findViewById(R.id.launch_button)
         overlayButton = findViewById(R.id.overlay_button)
 
-        Log.d(tag, "D5. detect")
-        try {
-            detected = FreeFireDetector.detect(this)
-        } catch (e: Throwable) {
-            Log.e(tag, "detect failed", e)
-            detected = null
-        }
-
+        detected = FreeFireDetector.detect(this)
         if (detected != null) {
             detectedLabel.text = "TARGET: ${detected!!.label}"
             detectedLabel.setTextColor(0xFF00FFB2.toInt())
@@ -82,33 +65,58 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         overlayButton.setOnClickListener { enableOverlay() }
-        menuHeader.setOnClickListener { toggleMenu() }
 
-        Log.d(tag, "D6. wire features")
-        try {
-            wireFeature(R.id.feat_aimbot, "Aimbot — Precision", false)
-            wireFeature(R.id.feat_wallhack, "Wallhack — Full Map", false)
-            wireFeature(R.id.feat_esp, "ESP — Player Outline", true)
-            wireFeature(R.id.feat_speed, "Speed Boost — x2.4", false)
-            wireFeature(R.id.feat_antiban, "Anti-Ban — Spoofed", true)
-            wireFeature(R.id.feat_autofire, "Auto-Fire — Trigger", false)
-        } catch (e: Throwable) {
-            Log.e(tag, "wireFeature failed", e)
+        setupDraggableMenu()
+
+        wireFeature(R.id.feat_aimbot, "Aimbot — Precision", false)
+        wireFeature(R.id.feat_wallhack, "Wallhack — Full Map", false)
+        wireFeature(R.id.feat_esp, "ESP — Player Outline", true)
+        wireFeature(R.id.feat_speed, "Speed Boost — x2.4", false)
+        wireFeature(R.id.feat_antiban, "Anti-Ban — Spoofed", true)
+        wireFeature(R.id.feat_autofire, "Auto-Fire — Trigger", false)
+
+        if (Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 100)
         }
+    }
 
-        Log.d(tag, "D7. notification permission")
-        try {
-            if (Build.VERSION.SDK_INT >= 33 &&
-                checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 100)
+    private fun setupDraggableMenu() {
+        var dX = 0f
+        var dY = 0f
+        var isDragging = false
+        var startX = 0f
+        var startY = 0f
+
+        menuHeader.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    isDragging = false
+                    startX = event.rawX
+                    startY = event.rawY
+                    dX = floatingMenu.x - event.rawX
+                    dY = floatingMenu.y - event.rawY
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (abs(event.rawX - startX) > 10 || abs(event.rawY - startY) > 10) {
+                        isDragging = true
+                        floatingMenu.x = event.rawX + dX
+                        floatingMenu.y = event.rawY + dY
+                    }
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (!isDragging) {
+                        toggleMenu()
+                    }
+                    true
+                }
+                else -> false
             }
-        } catch (e: Throwable) {
-            Log.e(tag, "perm request failed", e)
         }
-
-        Log.d(tag, "D8. done")
     }
 
     private fun wireFeature(cardId: Int, name: String, defaultOn: Boolean) {
