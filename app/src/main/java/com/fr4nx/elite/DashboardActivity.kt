@@ -8,12 +8,12 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.button.MaterialButton
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -21,8 +21,8 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var menuContent: LinearLayout
     private lateinit var menuChevron: ImageView
     private lateinit var detectedLabel: TextView
-    private lateinit var launchButton: MaterialButton
-    private lateinit var overlayButton: MaterialButton
+    private lateinit var launchButton: Button
+    private lateinit var overlayButton: Button
     private var menuOpen = true
     private var detected: FreeFireDetector.FFApp? = null
 
@@ -80,9 +80,9 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun wireFeature(cardId: Int, name: String, defaultOn: Boolean) {
-        val card = findViewById<View>(cardId)
-        val label = card.findViewById<TextView>(R.id.feature_label)
-        val state = card.findViewById<TextView>(R.id.feature_state)
+        val card = findViewById<View>(cardId) ?: return
+        val label = card.findViewById<TextView>(R.id.feature_label) ?: return
+        val state = card.findViewById<TextView>(R.id.feature_state) ?: return
         label.text = name
         var on = defaultOn
         state.text = if (on) "ON" else "OFF"
