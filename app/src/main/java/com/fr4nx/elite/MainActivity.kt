@@ -5,52 +5,37 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private val tag = "FR4NX"
-
-    private lateinit var emailInput: TextInputEditText
-    private lateinit var passwordInput: TextInputEditText
+    private lateinit var emailInput: EditText
+    private lateinit var passwordInput: EditText
     private lateinit var loginButton: Button
     private lateinit var statusText: TextView
     private lateinit var loadingBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(tag, "1. install crash guard")
-        CrashGuard.install(this)
-
-        Log.d(tag, "2. super.onCreate")
         super.onCreate(savedInstanceState)
-
-        Log.d(tag, "3. show last crash if any")
-        CrashGuard.showIfAny(this)
-
-        Log.d(tag, "4. set window flags")
+        
         try {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             )
-        } catch (e: Throwable) {
-            Log.e(tag, "setFlags failed", e)
-        }
+        } catch (_: Throwable) {}
 
-        Log.d(tag, "5. setContentView")
         setContentView(R.layout.activity_main)
 
-        Log.d(tag, "6. findViewById")
         emailInput = findViewById(R.id.email_input)
         passwordInput = findViewById(R.id.password_input)
         loginButton = findViewById(R.id.login_button)
@@ -58,10 +43,7 @@ class MainActivity : AppCompatActivity() {
         loadingBar = findViewById(R.id.loading_bar)
         loadingBar.visibility = View.GONE
 
-        Log.d(tag, "7. wire login")
         loginButton.setOnClickListener { onLogin() }
-
-        Log.d(tag, "8. done")
     }
 
     private fun onLogin() {
