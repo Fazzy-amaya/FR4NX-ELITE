@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_deep">#05060A</color>
+    <color name="bg_panel">#0E1118</color>
+    <color name="bg_panel_2">#161B26</color>
+    <color name="neon_green">#00FFB2</color>
+    <color name="neon_cyan">#00E5FF</color>
+    <color name="neon_purple">#B14BFF</color>
+    <color name="neon_pink">#FF3D9A</color>
+    <color name="text_primary">#F5F7FB</color>
+    <color name="text_secondary">#8A93A6</color>
+    <color name="text_muted">#4A5364</color>
+    <color name="danger">#FF4E5E</color>
+</resources>
