@@ -1,0 +1,3 @@
+-keep class com.fr4nx.elite.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**
